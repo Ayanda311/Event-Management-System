@@ -1,0 +1,12 @@
+
+:root {
+  --primary-color: #4f46e5;
+  --secondary-color: #7c3aed;
+  --background-color: #f5f7fb;
+  --text-color: #1f2937;
+  --white-color: #ffffff;
+  --border-color: #e5e7eb;
+
+  --border-radius: 12px;
+  --page-padding: 24px;
+}
