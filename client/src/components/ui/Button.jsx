@@ -19,13 +19,17 @@ function Button({
   );
 }
 
+export default Button;
+
 // Example Usage
-function ButtonExample() {
+export function ButtonExample() {
   return (
     <div>
       <h2>Reusable Button Examples</h2>
 
-      <Button onClick={() => alert("Create Event clicked!")}>
+      <Button
+        onClick={() => alert("Create Event clicked!")}
+      >
         Create Event
       </Button>
 
@@ -42,6 +46,3 @@ function ButtonExample() {
     </div>
   );
 }
-
-export { ButtonExample };
-export default Button;

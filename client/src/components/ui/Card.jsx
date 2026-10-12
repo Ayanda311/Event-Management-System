@@ -1,5 +1,10 @@
 
-function Card({ title, description, children, className = "" }) {
+function Card({
+  title,
+  description,
+  children,
+  className = ""
+}) {
   return (
     <div className={`ui-card ${className}`}>
       {title && <h3>{title}</h3>}
@@ -15,9 +20,10 @@ function Card({ title, description, children, className = "" }) {
   );
 }
 
-// Example Usage
+export default Card;
 
-function CardExample() {
+// Example Usage
+export function CardExample() {
   return (
     <div>
       <h2>Card Examples</h2>
@@ -47,7 +53,3 @@ function CardExample() {
     </div>
   );
 }
-
-
-export { CardExample };
-export default Card;

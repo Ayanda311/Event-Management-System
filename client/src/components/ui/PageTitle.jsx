@@ -9,8 +9,10 @@ function PageTitle({ title, subtitle, className = "" }) {
   );
 }
 
+export default PageTitle;
+
 // Example Usage
-function PageTitleExample() {
+export function PageTitleExample() {
   return (
     <div>
       <h2>Page Title Examples</h2>
@@ -33,5 +35,4 @@ function PageTitleExample() {
   );
 }
 
-export { PageTitleExample };
-export default PageTitle;
+
