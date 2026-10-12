@@ -1,13 +1,22 @@
 
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import PageTitle from "../../components/ui/PageTitle";
+import Button from "../../components/ui/Button";
 
 function NotFound() {
+  const navigate = useNavigate();
+
   return (
-    <section className="page-content">
-      <h1>404 - Page Not Found</h1>
-      <p>Sorry, the page you are looking for does not exist.</p>
-      <Link to="/">Return to Home</Link>
-    </section>
+    <div className="page-content">
+      <PageTitle
+        title="404 - Page Not Found"
+        subtitle="Sorry, the page you requested does not exist."
+      />
+
+      <Button onClick={() => navigate("/")}>
+        Return Home
+      </Button>
+    </div>
   );
 }
 

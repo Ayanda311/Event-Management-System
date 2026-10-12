@@ -2,18 +2,11 @@
 function Footer() {
   return (
     <footer className="footer">
-      <a href="#home" className="brand">
-        <span className="brand-icon">✦</span>
-        EventEase
-      </a>
-
       <p>
-        Discover experiences. Create memories.
+        © {new Date().getFullYear()} EventEase.
+        All rights reserved.
       </p>
-
-      <small>
-        © 2026 EventEase. All rights reserved.
-      </small>
+      <p>Event Management System</p>
     </footer>
   );
 }
