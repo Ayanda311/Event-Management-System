@@ -1,0 +1,159 @@
+
+.registration-page {
+  min-height: 100vh;
+  padding: 40px 20px;
+  background: #f4f6fb;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.registration-card {
+  width: 100%;
+  max-width: 650px;
+  padding: 35px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(15, 23, 42, 0.07);
+}
+
+.registration-heading {
+  margin-bottom: 28px;
+}
+
+.form-tag {
+  color: #4f46e5;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.registration-heading h1 {
+  margin: 10px 0;
+  color: #172033;
+  font-size: 30px;
+}
+
+.registration-heading p {
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #273449;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.form-group input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  color: #172033;
+  font-size: 15px;
+  outline: none;
+}
+
+.form-group input:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+}
+
+.form-group input[aria-invalid="true"] {
+  border-color: #dc2626;
+}
+
+.field-error {
+  margin: 7px 0 0;
+  color: #dc2626;
+  font-size: 13px;
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.submit-btn,
+.reset-btn {
+  padding: 12px 18px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.submit-btn {
+  flex: 1;
+  background: #4f46e5;
+  color: #fff;
+}
+
+.submit-btn:hover {
+  background: #4338ca;
+}
+
+.reset-btn {
+  background: #e9edf5;
+  color: #273449;
+}
+
+.reset-btn:hover {
+  background: #dbe2ee;
+}
+
+.required-note {
+  margin-top: 18px;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.success-message {
+  margin-bottom: 24px;
+  padding: 15px;
+  border: 1px solid #86efac;
+  border-radius: 8px;
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.success-message p {
+  margin-bottom: 0;
+  line-height: 1.5;
+}
+
+@media (max-width: 480px) {
+  .registration-page {
+    padding: 20px 12px;
+  }
+
+  .registration-card {
+    padding: 22px 16px;
+  }
+
+  .registration-heading h1 {
+    font-size: 25px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .submit-btn,
+  .reset-btn {
+    width: 100%;
+  }
+}

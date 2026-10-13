@@ -6,6 +6,7 @@ import Dashboard from "../pages/Dashboard/Dashboard";
 import Profile from "../pages/Profile/Profile";
 import Login from "../pages/Login/login";
 import NotFound from "../pages/NotFound/NotFound";
+import EventRegistration from "../pages/EventRegistration";
 
 function AppRoutes() {
   return (
@@ -16,6 +17,7 @@ function AppRoutes() {
         <Route path="profile" element={<Profile />} />
         <Route path="login" element={<Login />} />
         <Route path="*" element={<NotFound />} />
+        <Route path="/event-registration" element={<EventRegistration />} />
       </Route>
     </Routes>
   );
