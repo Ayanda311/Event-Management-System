@@ -1,41 +1,34 @@
-
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const closeMenu = () => setMenuOpen(false);
-
   return (
     <nav className="navbar">
-      <NavLink to="/" className="navbar-brand" onClick={closeMenu}>
+      <Link
+        to="/"
+        className="navbar-brand"
+        onClick={() => setMenuOpen(false)}
+      >
         EventEase
-      </NavLink>
+      </Link>
 
       <button
-        className="menu-toggle"
         type="button"
+        className="menu-toggle"
         onClick={() => setMenuOpen(!menuOpen)}
-        aria-label="Toggle navigation menu"
+        aria-label="Toggle navigation"
         aria-expanded={menuOpen}
       >
         ☰
       </button>
 
-      <div className={`navbar-links ${menuOpen ? "open" : ""}`}>
-        <NavLink to="/" end onClick={closeMenu}>
-          Home
-        </NavLink>
-        <NavLink to="/dashboard" onClick={closeMenu}>
-          Dashboard
-        </NavLink>
-        <NavLink to="/profile" onClick={closeMenu}>
-          Profile
-        </NavLink>
-        <NavLink to="/login" onClick={closeMenu}>
-          Login
-        </NavLink>
+      <div className={`navbar-links ${menuOpen ? "active" : ""}`}>
+        <Link to="/" onClick={() => setMenuOpen(false)}>Home</Link>
+        <Link to="/dashboard" onClick={() => setMenuOpen(false)}>Dashboard</Link>
+        <Link to="/profile" onClick={() => setMenuOpen(false)}>Profile</Link>
+        <Link to="/login" onClick={() => setMenuOpen(false)}>Login</Link>
       </div>
     </nav>
   );

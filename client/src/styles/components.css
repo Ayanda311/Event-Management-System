@@ -116,3 +116,29 @@
   width: 100%;
   align-items: stretch;
 }
+/* Force correct responsive navigation */
+.navbar .menu-toggle {
+  display: none;
+}
+
+.navbar .navbar-links {
+  display: flex;
+  flex-direction: row;
+}
+
+/* Mobile only */
+@media screen and (max-width: 768px) {
+  .navbar .menu-toggle {
+    display: block;
+  }
+
+  .navbar .navbar-links {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .navbar .navbar-links.active {
+    display: flex;
+  }
+}
