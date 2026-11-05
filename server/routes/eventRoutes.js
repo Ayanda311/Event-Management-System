@@ -8,7 +8,7 @@ const {
   createEvent,
   updateEvent,
   deleteEvent
-} = require("../controllers/eventController");
+} = require("../src/controllers/eventController");
 
 // GET /api/events
 router.get("/", getEvents);

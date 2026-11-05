@@ -6,7 +6,7 @@ const app = express();
 
 // Import routes and middleware
 const eventRoutes = require("./routes/eventRoutes");
-const requestLogger = require("./middleware/requestLogger");
+const requestLogger = require("./src/middleware/requestLogger");
 
 // Global middleware
 app.use(cors());

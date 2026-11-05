@@ -1,20 +1,26 @@
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { createEvent } from "../services/eventService";
 import "./EventRegistration.css";
 
 const initialFormData = {
-  eventName: "",
-  attendeeName: "",
-  email: "",
-  phone: "",
-  ticketQuantity: "1",
-  eventDate: "",
+  title: "",
+  category: "",
+  date: "",
+  venue: "",
+  description: "",
+  status: "upcoming",
 };
 
 function EventRegistration() {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState(initialFormData);
   const [errors, setErrors] = useState({});
-  const [submittedData, setSubmittedData] = useState(null);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   // Handle input changes
   function handleChange(event) {
@@ -25,271 +31,284 @@ function EventRegistration() {
       [name]: value,
     }));
 
-    // Clear the old error for the edited field
     setErrors((previousErrors) => ({
       ...previousErrors,
       [name]: "",
     }));
 
-    setSubmittedData(null);
+    setSuccessMessage("");
+    setErrorMessage("");
   }
 
-  // Validate the form
+  // Validate form
   function validateForm() {
     const newErrors = {};
 
-    if (!formData.eventName.trim()) {
-      newErrors.eventName = "Please enter the event name.";
+    if (formData.title.trim().length < 3) {
+      newErrors.title = "Title must contain at least 3 characters.";
     }
 
-    if (formData.attendeeName.trim().length < 3) {
-      newErrors.attendeeName =
-        "Name must contain at least 3 characters.";
+    if (!formData.category.trim()) {
+      newErrors.category = "Please select an event category.";
     }
 
-    if (
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
-    ) {
-      newErrors.email = "Please enter a valid email address.";
+    if (!formData.date) {
+      newErrors.date = "Please select an event date.";
     }
 
-    if (!/^\d{10,15}$/.test(formData.phone)) {
-      newErrors.phone =
-        "Enter a phone number containing 10–15 digits.";
+    if (!formData.venue.trim()) {
+      newErrors.venue = "Please enter the event venue.";
     }
 
-    const quantity = Number(formData.ticketQuantity);
-
-    if (
-      !Number.isInteger(quantity) ||
-      quantity < 1 ||
-      quantity > 10
-    ) {
-      newErrors.ticketQuantity =
-        "Choose between 1 and 10 tickets.";
-    }
-
-    if (!formData.eventDate) {
-      newErrors.eventDate = "Please select an event date.";
-    } else {
-      const selectedDate = new Date(
-        `${formData.eventDate}T00:00:00`
-      );
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      if (selectedDate < today) {
-        newErrors.eventDate =
-          "The event date cannot be in the past.";
-      }
+    if (formData.description.length > 1000) {
+      newErrors.description = "Description cannot exceed 1000 characters.";
     }
 
     return newErrors;
   }
 
-  // Handle form submission
-  function handleSubmit(event) {
+  // Handle form submission using POST API
+  async function handleSubmit(event) {
     event.preventDefault();
 
     const validationErrors = validateForm();
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length > 0) {
-      setSubmittedData(null);
       return;
     }
 
-    const registration = {
-      ...formData,
-      ticketQuantity: Number(formData.ticketQuantity),
-    };
+    try {
+      setLoading(true);
+      setSuccessMessage("");
+      setErrorMessage("");
 
-    console.log("Registration submitted:", registration);
+      // Prepare event data
+      const eventData = {
+        title: formData.title.trim(),
+        category: formData.category.trim(),
+        date: formData.date,
+        venue: formData.venue.trim(),
+        description: formData.description.trim(),
+        status: formData.status,
+      };
 
-    setSubmittedData(registration);
-    setFormData(initialFormData);
-    setErrors({});
+      // Send POST request to Express API
+      const createdEvent = await createEvent(eventData);
+
+      setSuccessMessage(
+        `"${createdEvent.title}" has been successfully created!`
+      );
+
+      // Clear form after successful creation
+      setFormData(initialFormData);
+      setErrors({});
+
+    } catch (error) {
+      setErrorMessage(
+        error.message || "Unable to create event. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
   }
 
-  // Reset the form
+  // Reset form
   function handleReset() {
     setFormData(initialFormData);
     setErrors({});
-    setSubmittedData(null);
+    setSuccessMessage("");
+    setErrorMessage("");
   }
 
   return (
     <div className="registration-page">
       <div className="registration-card">
+
         <div className="registration-heading">
           <span className="form-tag">EVENT MANAGEMENT</span>
-          <h1>Event Registration</h1>
+
+          <h1>Add New Event</h1>
+
           <p>
-            Register for an event and reserve your tickets.
+            Create and manage events using EventEase.
           </p>
         </div>
 
-        {submittedData && (
+        {/* Success message */}
+        {successMessage && (
           <div className="success-message" role="status">
-            <strong>Registration successful!</strong>
-            <p>
-              Thank you, {submittedData.attendeeName}.
-              Your registration has been recorded.
-            </p>
+            <strong>Event created successfully!</strong>
+            <p>{successMessage}</p>
+          </div>
+        )}
+
+        {/* Error message */}
+        {errorMessage && (
+          <div className="field-error" role="alert">
+            <strong>Something went wrong.</strong>
+            <p>{errorMessage}</p>
           </div>
         )}
 
         <form onSubmit={handleSubmit} noValidate>
+
+          {/* Event Title */}
           <div className="form-group">
-            <label htmlFor="eventName">Event Name *</label>
+            <label htmlFor="title">Event Title *</label>
+
             <input
-              id="eventName"
-              name="eventName"
-              value={formData.eventName}
+              id="title"
+              name="title"
+              type="text"
+              value={formData.title}
               onChange={handleChange}
               placeholder="e.g. Annual Tech Conference"
-              aria-invalid={Boolean(errors.eventName)}
-              aria-describedby={
-                errors.eventName ? "eventName-error" : undefined
-              }
+              aria-invalid={Boolean(errors.title)}
             />
-            {errors.eventName && (
-              <p className="field-error" id="eventName-error">
-                {errors.eventName}
-              </p>
+
+            {errors.title && (
+              <p className="field-error">{errors.title}</p>
             )}
           </div>
 
+          {/* Category */}
           <div className="form-group">
-            <label htmlFor="attendeeName">Full Name *</label>
-            <input
-              id="attendeeName"
-              name="attendeeName"
-              value={formData.attendeeName}
+            <label htmlFor="category">Event Category *</label>
+
+            <select
+              id="category"
+              name="category"
+              value={formData.category}
               onChange={handleChange}
-              placeholder="Enter your full name"
-              aria-invalid={Boolean(errors.attendeeName)}
-              aria-describedby={
-                errors.attendeeName
-                  ? "attendeeName-error"
-                  : undefined
-              }
-            />
-            {errors.attendeeName && (
-              <p className="field-error" id="attendeeName-error">
-                {errors.attendeeName}
-              </p>
+              aria-invalid={Boolean(errors.category)}
+            >
+              <option value="">Select a category</option>
+              <option value="Technology">Technology</option>
+              <option value="Education">Education</option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="Sports">Sports</option>
+              <option value="Cultural">Cultural</option>
+              <option value="Business">Business</option>
+              <option value="Other">Other</option>
+            </select>
+
+            {errors.category && (
+              <p className="field-error">{errors.category}</p>
             )}
           </div>
 
+          {/* Date */}
           <div className="form-group">
-            <label htmlFor="email">Email Address *</label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="you@example.com"
-              aria-invalid={Boolean(errors.email)}
-              aria-describedby={
-                errors.email ? "email-error" : undefined
-              }
-            />
-            {errors.email && (
-              <p className="field-error" id="email-error">
-                {errors.email}
-              </p>
-            )}
-          </div>
+            <label htmlFor="date">Event Date *</label>
 
-          <div className="form-group">
-            <label htmlFor="phone">Phone Number *</label>
             <input
-              id="phone"
-              name="phone"
-              type="tel"
-              value={formData.phone}
-              onChange={handleChange}
-              placeholder="Enter 10–15 digits"
-              aria-invalid={Boolean(errors.phone)}
-              aria-describedby={
-                errors.phone ? "phone-error" : undefined
-              }
-            />
-            {errors.phone && (
-              <p className="field-error" id="phone-error">
-                {errors.phone}
-              </p>
-            )}
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="ticketQuantity">
-              Number of Tickets *
-            </label>
-            <input
-              id="ticketQuantity"
-              name="ticketQuantity"
-              type="number"
-              min="1"
-              max="10"
-              value={formData.ticketQuantity}
-              onChange={handleChange}
-              aria-invalid={Boolean(errors.ticketQuantity)}
-              aria-describedby={
-                errors.ticketQuantity
-                  ? "ticketQuantity-error"
-                  : undefined
-              }
-            />
-            {errors.ticketQuantity && (
-              <p
-                className="field-error"
-                id="ticketQuantity-error"
-              >
-                {errors.ticketQuantity}
-              </p>
-            )}
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="eventDate">Event Date *</label>
-            <input
-              id="eventDate"
-              name="eventDate"
+              id="date"
+              name="date"
               type="date"
-              value={formData.eventDate}
+              value={formData.date}
               onChange={handleChange}
-              aria-invalid={Boolean(errors.eventDate)}
-              aria-describedby={
-                errors.eventDate ? "eventDate-error" : undefined
-              }
+              aria-invalid={Boolean(errors.date)}
             />
-            {errors.eventDate && (
-              <p className="field-error" id="eventDate-error">
-                {errors.eventDate}
-              </p>
+
+            {errors.date && (
+              <p className="field-error">{errors.date}</p>
             )}
           </div>
 
+          {/* Venue */}
+          <div className="form-group">
+            <label htmlFor="venue">Event Venue *</label>
+
+            <input
+              id="venue"
+              name="venue"
+              type="text"
+              value={formData.venue}
+              onChange={handleChange}
+              placeholder="Enter event venue"
+              aria-invalid={Boolean(errors.venue)}
+            />
+
+            {errors.venue && (
+              <p className="field-error">{errors.venue}</p>
+            )}
+          </div>
+
+          {/* Description */}
+          <div className="form-group">
+            <label htmlFor="description">Event Description</label>
+
+            <textarea
+              id="description"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              placeholder="Describe your event..."
+              maxLength={1000}
+              rows={4}
+            />
+
+            <small>
+              {formData.description.length}/1000 characters
+            </small>
+
+            {errors.description && (
+              <p className="field-error">{errors.description}</p>
+            )}
+          </div>
+
+          {/* Status */}
+          <div className="form-group">
+            <label htmlFor="status">Event Status</label>
+
+            <select
+              id="status"
+              name="status"
+              value={formData.status}
+              onChange={handleChange}
+            >
+              <option value="upcoming">Upcoming</option>
+              <option value="ongoing">Ongoing</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+
+          {/* Buttons */}
           <div className="form-actions">
-            <button type="submit" className="submit-btn">
-              Register for Event
+
+            <button
+              type="submit"
+              className="submit-btn"
+              disabled={loading}
+            >
+              {loading ? "Creating Event..." : "Create Event"}
             </button>
 
             <button
               type="button"
               className="reset-btn"
               onClick={handleReset}
+              disabled={loading}
             >
               Reset Form
             </button>
+
           </div>
 
           <p className="required-note">
-            * All fields are required.
+            * All required fields must be completed.
           </p>
+
+          <button
+            type="button"
+            className="reset-btn"
+            onClick={() => navigate("/dashboard")}
+          >
+            Back to Dashboard
+          </button>
+
         </form>
       </div>
     </div>
