@@ -1,57 +1,137 @@
 
-import { useNavigate } from "react-router-dom";
-import PageTitle from "../../components/ui/PageTitle";
-import Card from "../../components/ui/Card";
-import Button from "../../components/ui/Button";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { loginUser } from "../../services/authService";
+import "../../styles/Auth.css";
 
 function Login() {
-  const navigate = useNavigate();
 
-  function handleSubmit(event) {
-    event.preventDefault();
-    alert("Demo login form submitted.");
-  }
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  // Handle input changes
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  // Handle login
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    setError("");
+    setSuccess("");
+
+    const { email, password } = formData;
+
+    if (!email.trim()) {
+      setError("Please enter your email");
+      return;
+    }
+
+    if (!password) {
+      setError("Please enter your password");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const response = await loginUser({
+        email,
+        password,
+      });
+
+      if (response.success) {
+        setSuccess(`Welcome, ${response.data.name}! Login successful.`);
+
+        setFormData({
+          email: "",
+          password: "",
+        });
+      }
+
+    } catch (err) {
+      setError(err.message || "Login failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="page-content">
-      <PageTitle
-        title="Login"
-        subtitle="Access your EventEase account."
-      />
+    <div className="auth-container">
 
-      <Card title="Sign In">
+      <div className="auth-card">
+
+        <h1>Welcome Back</h1>
+
+        <p className="auth-subtitle">
+          Login to your EventEase account
+        </p>
+
+        {error && (
+          <div className="auth-error">
+            {error}
+          </div>
+        )}
+
+        {success && (
+          <div className="auth-success">
+            {success}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit}>
+
           <div className="form-group">
-            <label htmlFor="email">Email address</label>
+            <label>Email Address</label>
+
             <input
-              id="email"
               type="email"
+              name="email"
               placeholder="Enter your email"
-              required
+              value={formData.email}
+              onChange={handleChange}
             />
           </div>
 
           <div className="form-group">
-            <label htmlFor="password">Password</label>
+            <label>Password</label>
+
             <input
-              id="password"
               type="password"
+              name="password"
               placeholder="Enter your password"
-              required
+              value={formData.password}
+              onChange={handleChange}
             />
           </div>
 
-          <Button type="submit">Login</Button>
-          {" "}
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={() => navigate("/")}
+          <button
+            type="submit"
+            className="auth-button"
+            disabled={loading}
           >
-            Cancel
-          </Button>
+            {loading ? "Logging In..." : "Login"}
+          </button>
+
         </form>
-      </Card>
+
+        <p className="auth-footer">
+          Don't have an account?{" "}
+          <Link to="/register">Register</Link>
+        </p>
+
+      </div>
+
     </div>
   );
 }

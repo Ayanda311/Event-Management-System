@@ -9,6 +9,7 @@ import Login from "../pages/Login/login";
 import NotFound from "../pages/NotFound/NotFound";
 import EventRegistration from "../pages/EventRegistration";
 import Participants from "../pages/Participants/Participants";
+import Register from "../pages/Register/Register";
 
 function AppRoutes() {
   return (
@@ -20,6 +21,8 @@ function AppRoutes() {
         <Route path="login" element={<Login />} />
         <Route path="event-registration" element={<EventRegistration />} />
         <Route path="participants" element={<Participants />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />  
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
