@@ -1,8 +1,14 @@
+
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
+
+  const isActive = (path) => {
+    return location.pathname === path ? "active-link" : "";
+  };
 
   return (
     <nav className="navbar">
@@ -25,10 +31,45 @@ function Navbar() {
       </button>
 
       <div className={`navbar-links ${menuOpen ? "active" : ""}`}>
-        <Link to="/" onClick={() => setMenuOpen(false)}>Home</Link>
-        <Link to="/dashboard" onClick={() => setMenuOpen(false)}>Dashboard</Link>
-        <Link to="/profile" onClick={() => setMenuOpen(false)}>Profile</Link>
-        <Link to="/login" onClick={() => setMenuOpen(false)}>Login</Link>
+        <Link
+          to="/"
+          className={isActive("/")}
+          onClick={() => setMenuOpen(false)}
+        >
+          Home
+        </Link>
+
+        <Link
+          to="/dashboard"
+          className={isActive("/dashboard")}
+          onClick={() => setMenuOpen(false)}
+        >
+          Dashboard
+        </Link>
+
+        <Link
+          to="/participants"
+          className={isActive("/participants")}
+          onClick={() => setMenuOpen(false)}
+        >
+          Participants
+        </Link>
+
+        <Link
+          to="/profile"
+          className={isActive("/profile")}
+          onClick={() => setMenuOpen(false)}
+        >
+          Profile
+        </Link>
+
+        <Link
+          to="/login"
+          className={isActive("/login")}
+          onClick={() => setMenuOpen(false)}
+        >
+          Login
+        </Link>
       </div>
     </nav>
   );

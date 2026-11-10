@@ -5,6 +5,7 @@ const cors = require("cors");
 const app = express();
 
 const eventRoutes = require("./routes/eventRoutes");
+const participantRoutes = require("./routes/participantRoutes");
 const requestLogger = require("./middleware/requestLogger");
 
 app.use(cors());
@@ -25,6 +26,9 @@ app.get("/api/test", (req, res) => {
 // Register Events routes
 app.use("/api/events", eventRoutes);
 
-console.log("Loaded app.js with Sprint 12 Events routes");
+// Register Participants routes
+app.use("/api/participants", participantRoutes);
+
+console.log("Loaded app.js with Sprint 17 Participants routes");
 
 module.exports = app;
